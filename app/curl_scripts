@@ -1,0 +1,41 @@
+(1) POST - Log in and start a session
+curl -i -H "Content-Type: application/json" -X POST -d '{"username": "insert-username", "password": "insert-password"}' -c cookie-jar http://cs3103.cs.unb.ca:8006/login 
+
+(2) GET - Check the login status
+curl -i -H "Content-Type: application/json" -X GET -b cookie-jar http://cs3103.cs.unb.ca:8006/login 
+
+(3) DELETE - Log Out
+curl -i -H "Content-Type: application/json" -X DELETE -b cookie-jar http://cs3103.cs.unb.ca:8006/login 
+
+(4) GET - View your personal present list
+curl -i -H "Content-Type: application/json" -X GET -b cookie-jar http://cs3103.cs.unb.ca:8006/myList 
+
+(5) PUT - Update the quantity of a present inside your list
+curl -i -H "Content-Type: application/json" -X PUT -d '{"Quantity": "insert-quantity"}' -b cookie-jar http://cs3103.cs.unb.ca:8006/myList/<int:presentId> 
+
+(6) DELETE - Delete present from your personal list
+curl -i -H "Content-Type: application/json" -X DELETE -b cookie-jar http://cs3103.cs.unb.ca:8006/myList/<int:presentId> 
+
+(7) GET - Get a list of all presents inside the database
+curl -i -H "Content-Type: application/json" -X GET -b cookie-jar http://cs3103.cs.unb.ca:8006/presents 
+
+(8) POST - Add a new present to the presents database
+curl -i -H "Content-Type: application/json" -X POST -d '{"Present_Name": "insert-presentName", "Vendor": "insert-vendor", "Cost" : "inset-cost"}' -c cookie-jar http://cs3103.cs.unb.ca:8006/presents 
+
+(9) GET - Show a specific present inside the present database
+curl -i -H "Content-Type: application/json" -X GET -b cookie-jar http://cs3103.cs.unb.ca:8006/presents/<int:presentId>
+
+(10) POST - Add a present from the presents databse to your personal list
+curl -i -H "Content-Type: application/json" -X POST -d '{"Quantity": "insert-quantity"}' -c cookie-jar http://cs3103.cs.unb.ca:8006/presents/<int:presentId>
+
+(11) DELETE - Delete present from presents database
+curl -i -H "Content-Type: application/json" -X DELETE -b cookie-jar http://cs3103.cs.unb.ca:8006/presents/<int:presentId>
+
+(12) GET - Get all users from users database
+curl -i -H "Content-Type: application/json" -X GET -b cookie-jar http://cs3103.cs.unb.ca:8006/users 
+
+(13) GET - Get a specific user from users database
+curl -i -H "Content-Type: application/json" -X GET -b cookie-jar http://cs3103.cs.unb.ca:8006/users/<int:userId> 
+
+(14) GET - View a specific users present list
+curl -i -H "Content-Type: application/json" -X GET -b cookie-jar http://cs3103.cs.unb.ca:8006/users/<int:userId>/presents/ 

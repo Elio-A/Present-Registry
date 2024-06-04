@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width-device-width, initial-scale=1.0">
+        <title>Present Registry Application</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    </head>
+    <body>
+        <div class="container-fluid" id="app">
+            <div class="jumbotron jumbotron-fluid text-center">
+                <h1>Welcome to Present Registry</h1>
+            <div v-if="!authenticated" class="form-group text-center">
+                <input class="col-4 mx-auto form-control" type="text" name="username" v-model="input.username" placeholder="Username" />
+                <input class="col-4 mx-auto form-control" type="password" name="password" v-model="input.password" placeholder="Password" />
+                <button class="col-4 btn btn-outline-success" type="button" v-on:click="login()">Login</button>
+            </div>
+            <div v-else>
+                <button type="button" class="btn btn-outline-danger" v-on:click="logout()">Logout</button>
+                <button type="button" class="btn btn-outline-primary" v-on:click="showList()">My List</button>
+                <button type="button" class="btn btn-outline-primary" v-on:click="getPresents()">Show all presents</button>
+                <button type="button" class="btn btn-outline-primary" v-on:click="getUsers()">View users</button>
+            </div>
+            </div>
+            
+            <div v-if="authenticated">
+                <div v-if="personalList != null">
+                    <div class="d-flex justify-content-center">
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <td>Present Name</td>
+                                        <td>Cost ($/each)</td>
+                                        <td>Quantity</td>
+                                        <td>Update Quantity</td>
+                                        <td>Remove Present from List</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="present in personalList">
+                                        <td>{{present.present_name}}</td>
+                                        <td>{{present.cost}}</td>
+                                        <td>{{present.quantity}}</td>
+                                        <td class="btn-group-xs">
+                                            <button class="utilityBtn text-false" v-on:click="updateQuantity(present.present_ID)">✎</button>
+                                        </td>
+                                        <td class="btn-group-xs">
+                                            <button class="utilityBtn text-false" v-on:click="removePresentFromList(present.present_ID)">🗑️</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- <div class="form-group text-center">
+                        <P>Present Name    Quantity</P>
+                    </div>
+                    <ul class="list-group">
+                        <div v-for="present in personalList">
+                            <li class="list-group-item col-7 mx-auto">
+                                <div class="d-flex w-100 justify-content-between">
+                                    {{present.present_name}}, {{present.quantity}}
+                                    <div class="btn-group-xs">
+                                        <button class="utilityBtn text-false" v-on:click="updateQuantity(present.present_ID)">✎</button>
+                                        <button class="utilityBtn text-false" v-on:click="removePresentFromList(present.present_ID)">🗑️</button>               
+                                    </div>
+                                </div>
+                            </li>
+                        </div>
+                    </ul> -->
+                </div>
+                <div v-if="presentData != null">
+                    <div class="d-flex justify-content-center">
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <td>Present Name</td>
+                                        <td>Present Vendor</td>
+                                        <td>Present Cost</td>
+                                        <td>Add Present To List</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="present in presentData">
+                                        <td>{{present.present_name}}</td>
+                                        <td>{{present.vendor}}</td>
+                                        <td>{{present.cost}}</td>
+                                        <td class="btn-group-xs">
+                                            <button class="utilityBtn text-success" v-on:click="add(present.present_id)">+</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div v-if="usersList != null">
+                    <div class="d-flex justify-content-center">
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <td>user ID</td>
+                                        <td>Username</td>
+                                        <td>View List</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="user in usersList">
+                                        <td>{{user.user_id}}</td>
+                                        <td>{{user.username}}</td>
+                                        <td class="btn-group-xs">
+                                            <button class="utilityBtn text-success" v-on:click="getUserList(user.user_id)">See List</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div v-if="userPresents != null">
+                </br>
+                    <div class="form-group text-center">
+                        <div v-for="i in userInfo">
+                            <h2>{{i.username }}'s List</h2>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <td>Present Name</td>
+                                        <td>Present Quantity</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="present in userPresents">
+                                            <td>{{present.present_name}}</td>
+                                            <td>{{present.quantity}}</td>
+                                            <!-- <div class="d-flex w-100 justify-content-between">
+                                                {{present.present_name}}, {{present.quantity}}
+                                            </div> -->
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <modal v-if="editModal" @close="hideModal">
+                <div slot="header" class="modal-header">
+                    Edit Present Quantity
+                </div>
+                <div slot="body">
+                    <div class="form-group col-6">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text model-prepend">Quantity</span>
+                            </div>
+                            <input class="col-8 form-control" type="text" id="quantity" v-model="present.quantity" placeholder="Quantity" />
+                        </div>
+                    </div>
+                </div>
+                <div slot="footer">
+                    <button type="button" class="btn btn-secondary" v-on:click="hideModal()">Close</button>
+                    <button type="button" class="btn btn-secondary" v-on:click="update()">Update</button>
+                </div>
+            </modal>
+            <modal v-if="addPresent" @close="hideModal">
+                <div slot="header" class="modal-header">
+                    Insert Quantity
+                </div>
+                <div slot="body">
+                    <div class="form-group col-6">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text model-prepend">Quantity</span>
+                            </div>
+                            <input class="col-8 form-control" type="text" id="quantity" v-model="present.quantity" placeholder="Quantity" />
+                        </div>
+                    </div>
+                </div>
+                <div slot="footer">
+                    <button type="button" class="btn btn-secondary" v-on:click="hideModal()">Close</button>
+                    <button type="button" class="btn btn-secondary" v-on:click="addPresentToList()">Update</button>
+                </div>
+            </modal>
+            <script type="text/x-template" id="modal-template">
+                <transition name="modal">
+                  <div class="modal-backdrop">
+                  <div class="modal">
+                    <header class="modal-header">
+                      <slot name="header">
+                        Header Template
+                        <button type="button" class="btn-close" @click="hideModal()">
+                          x
+                        </button>
+                      </slot>
+                    </header>
+                    <section class="modal-body">
+                      <slot name="body">
+                        Body Template
+                      </slot>
+                     </section>
+                     <footer class="modal-footer">
+                        <slot name="footer">
+                          Footer Template
+                          <button type="button" class="btn-green" @click="hideModal()">
+                            Close me!
+                          </button>
+                        </slot>
+                      </footer>
+                    </div>
+                  </div>
+                </transition>
+              </script>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"/>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/static/index.js"></script>
+        <link rel="stylesheet" href="/static/index.css"/>
+    </body>
+</html>
